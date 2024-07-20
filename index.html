@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Info Master</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+        h1 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        h3 {
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        a:hover {
+            color: #2980b9;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:first-child {
+            background-color: #2ecc71;
+        }
+        button:first-child:hover {
+            background-color: #27ae60;
+        }
+        button:last-child {
+            background-color: #e74c3c;
+        }
+        button:last-child:hover {
+            background-color: #c0392b;
+        }
+        .profile-info img {
+            border-radius: 50%;
+            margin: 20px 0;
+            width: 100px;
+            height: 100px;
+            border: 3px solid #ddd;
+        }
+        @media (max-width: 768px) {
+            .button-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><u>GitHub Info Master</u></h1>
+        <h3>Enter your GitHub username to see the info</h3>
+        <input type="text" placeholder="Enter your GitHub username" id="input_tag">
+        <div class="button-container">
+            <button onclick="call()">Submit</button>
+            <button onclick="erase()">Reset</button>
+        </div>
+        <div class="profile-info">
+            <img id="IMG" src="" alt="N/A">
+            <h3><a id="profile_url" href="" target="_blank"><span id="p_name"></span></a></h3>
+            <h3 id="folowers"></h3>
+            <h3 id="followings"></h3>
+        </div>
+    </div>
+    <script>
+        function call() {
+            const value = document.getElementById("input_tag").value;
+            if (value === "") {
+                alert("Please enter a GitHub username");
+                return;
+            }
+            const xhr = new XMLHttpRequest();
+            const api = `https://api.github.com/users/${value}`;
+            xhr.open("GET", api);
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        const data = JSON.parse(xhr.response);
+                        document.getElementById("IMG").src = data.avatar_url;
+                        document.getElementById("p_name").innerText = data.name || data.login;
+                        document.getElementById("profile_url").href = data.html_url;
+                        document.getElementById("folowers").innerText = `Followers: ${data.followers}`;
+                        document.getElementById("followings").innerText = `Following: ${data.following}`;
+                    } else {
+                        alert('User not found');
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+        function erase() {
+            document.getElementById("input_tag").value = '';
+            document.getElementById("IMG").src = '';
+            document.getElementById("p_name").innerText = '';
+            document.getElementById("profile_url").href = '';
+            document.getElementById("folowers").innerText = '';
+            document.getElementById("followings").innerText = '';
+        }
+    </script>
+</body>
+</html>
